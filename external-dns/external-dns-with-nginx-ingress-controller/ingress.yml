@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: api-myappshop-com
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+    #kubernetes.io/ingress.class: nginx
+  namespace: myapptls
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - api.myappshop.com
+    secretName: cert-api-myappshop-com
+  rules:
+  - host: api.myappshop.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: myapp
+            port:
+              number: 8080
