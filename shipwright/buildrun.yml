@@ -1,0 +1,8 @@
+apiVersion: shipwright.io/v1beta1
+kind: BuildRun
+metadata:
+  namespace: my-sample
+  generateName: buildpack-nodejs-buildrun-
+spec:
+  build:
+    name: buildpack-nodejs-build

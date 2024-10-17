@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myingress-domain
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-production"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: app1.kubeoncloud.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: app-1-myapp
+                port: 
+                  number: 80
+    - host: app2.kubeoncloud.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: app-2-myapp
+                port: 
+                  number: 80
+  tls:
+  - hosts:
+    - app1.kubeoncloud.com
+    secretName: app1-kubeoncloud-secret
+  - hosts:
+    - app2.kubeoncloud.com
+    secretName: app2-kubeoncloud-secret

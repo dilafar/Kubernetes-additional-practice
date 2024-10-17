@@ -1,0 +1,8 @@
+apiVersion: shipwright.io/v1beta1
+kind: BuildRun
+metadata:
+  namespace: my-sample
+  generateName: nginx-build-
+spec:
+  build:
+    name: nginx-build

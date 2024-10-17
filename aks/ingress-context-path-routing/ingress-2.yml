@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myingress-cpr
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - pathType: Prefix
+            path: /app1
+            backend:
+              service:
+                name: app-1-myapp
+                port: 
+                  number: 80
+          - pathType: Prefix
+            path: /app2
+            backend:
+              service:
+                name: app-2-myapp
+                port: 
+                  number: 80
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: app-3-myapp
+                port: 
+                  number: 80
+

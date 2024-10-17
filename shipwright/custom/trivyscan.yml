@@ -1,0 +1,47 @@
+apiVersion: shipwright.io/v1beta1
+kind: Build
+metadata:
+  namespace: my-sample
+  name: nginx-build
+spec:
+  source:
+    type: Git
+    git:
+      url: https://github.com/shipwright-io/sample-nodejs
+  strategy:
+    name: kaniko
+    kind: ClusterBuildStrategy
+  output:
+    image: docker.io/fadhiljr/shipwright-v2:latest
+    pushSecret: push-secret
+
+---
+apiVersion: shipwright.io/v1beta1
+kind: BuildRun
+metadata:
+  namespace: my-sample
+  generateName: nginx-build-
+spec:
+  build:
+    name: nginx-build
+  serviceAccount:
+    name: build-bot
+  postBuild:
+    steps:
+      - name: trivy-scan
+        image: aquasec/trivy:latest
+        script: |
+          # Scan the image built by Shipwright using Trivy
+          trivy image --exit-code 1 --severity HIGH,CRITICAL docker.io/fadhiljr/shipwright-v2:latest
+
+      - name: push-image
+        image: kaniko-project/executor:latest
+        script: |
+          # Push the image only if it passes Trivy scan
+          if [ $? -eq 0 ]; then
+            echo "Trivy scan passed, pushing the image..."
+            /kaniko/executor --destination=docker.io/fadhiljr/shipwright-v2:latest --push
+          else
+            echo "Trivy scan failed, aborting the push."
+            exit 1
+          fi

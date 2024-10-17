@@ -1,0 +1,17 @@
+apiVersion: shipwright.io/v1beta1
+kind: Build
+metadata:
+  namespace: my-sample
+  name: buildpack-nodejs-build
+spec:
+  source:
+    type: Git
+    git:
+      url: https://github.com/shipwright-io/sample-nodejs
+    contextDir: source-build
+  strategy:
+    name: buildpacks-v3
+    kind: ClusterBuildStrategy
+  output:
+    image: docker.io/fadhiljr/shipwright-v2:latest
+    pushSecret: push-secret
